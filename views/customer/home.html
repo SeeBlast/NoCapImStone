@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Dashboard - FeedMe</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script defer src="../../assets/js/customer.js"></script>
+</head>
+<body>
+
+<header class="header-nav">
+  <div class="logo">🍽 FeedMe</div>
+  <div class="user-controls">
+    <span class="location">📍 Toronto, ON</span>
+    <a href="../../auth/login.html" class="logout-btn">Log Out</a>
+  </div>
+</header>
+
+<main class="dashboard-container">
+  
+  <section class="welcome-section">
+    <h2>What are you craving today?</h2>
+    <div class="search-bar">
+      <input type="text" id="restaurantSearch" placeholder="Search restaurants or cuisines...">
+    </div>
+  </section>
+
+  <section class="category-filters" id="categoryFilters">
+    <button class="filter-btn active" data-category="all">All</button>
+    <button class="filter-btn" data-category="italian">Italian</button>
+    <button class="filter-btn" data-category="japanese">Japanese</button>
+    <button class="filter-btn" data-category="american">American</button>
+    <button class="filter-btn" data-category="mexican">Mexican</button>
+  </section>
+
+  <section class="restaurants-section">
+    <div class="restaurant-grid" id="restaurantGrid">
+      
+      <article class="restaurant-card" onclick="window.location.href='restaurants.html'">
+        <div class="card-image">
+          <img src="https://via.placeholder.com/300x150?text=Italiano+Bistro" alt="Italiano Bistro">
+        </div>
+        <div class="card-content">
+          <h3>Italiano Bistro</h3>
+          <p class="meta">⭐ 4.8 • Italian • 25-35 min</p>
+          <span class="status open">Open Now</span>
+        </div>
+      </article>
+
+      <article class="restaurant-card" onclick="window.location.href='restaurants.html'">
+        <div class="card-image">
+          <img src="https://via.placeholder.com/300x150?text=Sushi+House" alt="Sushi House">
+        </div>
+        <div class="card-content">
+          <h3>Sushi House</h3>
+          <p class="meta">⭐ 4.6 • Japanese • 30-40 min</p>
+          <span class="status open">Open Now</span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>

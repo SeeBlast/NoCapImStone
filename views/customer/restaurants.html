@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu & Cart - FeedMe</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script defer src="../../assets/js/scrypt.js"></script>
+</head>
+<body>
+
+<header class="header-nav">
+  <div class="logo">🍽 FeedMe</div>
+  <div class="user-controls">
+    <a href="home.html" class="logout-btn">← Volver a Restaurantes</a>
+  </div>
+</header>
+
+<section class="welcome-section" style="padding: 40px 40px 0; max-width: 1400px; margin: 0 auto;">
+  <h2>Menú del Restaurante</h2>
+</section>
+
+<main class="container">
+  
+  <div class="food-grid" id="foodGrid">
+    </div>
+
+  <aside class="cart">
+    <h3>🛒 Your Cart (<span id="cartCount2">0</span>)</h3>
+    <div id="cartItems"></div>
+    <div class="cart-total">
+      Total: $<span id="cartTotal">0.00</span>
+    </div>
+    
+    <button style="width: 100%; margin-top: 20px; padding: 15px; background: #10b981; color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 16px;">
+      Confirmar Orden
+    </button>
+  </aside>
+
+</main>
+
+</body>
+</html>

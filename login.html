@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeedMe – Login</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="auth-page">
+
+<div class="auth-container">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="logo-icon">🍔</div>
+      <h1>FeedMe</h1>
+      <p class="auth-tagline">Delicious food, delivered fast</p>
+    </div>
+
+    <!-- Sign In / Sign Up switcher -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchTab('signup')">Sign Up</button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="loginForm" class="auth-form" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <div class="form-options">
+        <label class="checkbox-label">
+          <input type="checkbox"> Remember me
+        </label>
+        <a href="#" class="forgot-link">Forgot password?</a>
+      </div>
+      <button type="submit" class="btn-primary full-width">Sign In</button>
+      <div id="loginError" class="form-error hidden"></div>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signupForm" class="auth-form hidden" onsubmit="handleSignup(event)">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="signupName" placeholder="Jane Doe" required>
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="signupEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="signupPassword" placeholder="Min. 6 characters" required minlength="6">
+      </div>
+      <button type="submit" class="btn-primary full-width">Create Account</button>
+      <div id="signupError" class="form-error hidden"></div>
+    </form>
+
+    <div class="auth-divider"><span>or continue with</span></div>
+    <div class="social-buttons">
+      <button class="social-btn" onclick="socialLogin()"><span>G</span> Google</button>
+      <button class="social-btn" onclick="socialLogin()"><span>f</span> Facebook</button>
+    </div>
+  </div>
+
+  <!-- Decorative right panel -->
+  <div class="auth-side">
+    <div class="auth-side-content">
+      <h2>Order from your favourite restaurants</h2>
+      <p>Fast delivery • Wide selection • Easy ordering</p>
+      <div class="feature-list">
+        <div class="feature-item">🍕 100+ restaurants</div>
+        <div class="feature-item">⚡ 30-45 min delivery</div>
+        <div class="feature-item">💳 Safe & secure payments</div>
+        <div class="feature-item">⭐ Exclusive deals daily</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // --- Tab switching ---
+
+  function switchTab(tab) {
+    const [loginTab, signupTab] = document.querySelectorAll('.auth-tab');
+    const [loginForm, signupForm] = document.querySelectorAll('.auth-form');
+
+    // Deactivate everything first
+    loginTab.classList.remove('active');
+    signupTab.classList.remove('active');
+    loginForm.classList.add('hidden');
+    signupForm.classList.add('hidden');
+
+    if (tab === 'login') {
+      loginTab.classList.add('active');
+      loginForm.classList.remove('hidden');
+    } else {
+      signupTab.classList.add('active');
+      signupForm.classList.remove('hidden');
+    }
+  }
+
+  // --- Auth handlers ---
+  // Note: these use sessionStorage for demo purposes only.
+  // In production these would call a real API.
+
+  function handleLogin(e) {
+    e.preventDefault();
+    const email    = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+
+    if (email && password) {
+      const name = email.split('@')[0];
+      sessionStorage.setItem('feedme_user', JSON.stringify({ name, email }));
+      window.location.href = 'index.html';
+    }
+  }
+
+  function handleSignup(e) {
+    e.preventDefault();
+    const name     = document.getElementById('signupName').value;
+    const email    = document.getElementById('signupEmail').value;
+    const password = document.getElementById('signupPassword').value;
+
+    if (name && email && password) {
+      sessionStorage.setItem('feedme_user', JSON.stringify({ name, email }));
+      window.location.href = 'index.html';
+    }
+  }
+
+  function socialLogin() {
+    sessionStorage.setItem('feedme_user', JSON.stringify({ name: 'Guest', email: 'guest@feedme.com' }));
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>

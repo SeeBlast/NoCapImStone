@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu — FeedMe</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+      }
+    }
+  </script>
+  <script type="module" src="../../assets/js/pages/menu.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <a href="home.html" class="logo">
+    <div class="logo-icon-sm">🍔</div>
+    <div>
+      <span class="logo-text">FeedMe</span>
+      <div class="location">📍 Toronto, ON</div>
+    </div>
+  </a>
+  <button class="cart-float-btn" id="cartFloatBtn">
+    🛒 <span id="cartBadge" class="cart-badge hidden">0</span>
+  </button>
+</header>
+
+<div class="yellow-bar"></div>
+
+<div class="menu-layout">
+  <div class="menu-main">
+    <div class="restaurant-banner">
+      <a href="home.html" class="back-link">← Back to restaurants</a>
+      <h1 id="restName">Loading…</h1>
+      <p id="restDesc" class="rest-desc-text"></p>
+      <div class="rest-meta-row">
+        <span id="restRating"></span>
+        <span id="restTime"></span>
+        <span id="restPrice"></span>
+      </div>
+    </div>
+
+    <div class="search-section" style="margin-top: 24px;">
+      <div class="search-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="menuSearch" placeholder="What are you craving?">
+      </div>
+    </div>
+
+    <section class="categories" id="menuCategories"></section>
+
+    <div class="food-grid" id="foodGrid"></div>
+  </div>
+
+  <aside class="cart-sidebar" id="cartSidebar">
+    <h3 class="cart-title">🛒 Your Cart (<span id="cartCount">0</span>)</h3>
+    <div id="cartItems" class="cart-items-list"></div>
+    <div id="cartFooter" class="cart-footer hidden">
+      <div class="cart-total-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">$0.00</span>
+      </div>
+      <div class="cart-total-row">
+        <span>Delivery</span>
+        <span>$2.99</span>
+      </div>
+      <div class="cart-total-row total-bold">
+        <span>Total</span>
+        <span id="cartTotal">$0.00</span>
+      </div>
+      <button class="btn-primary full-width" id="checkoutBtn">Proceed to Checkout →</button>
+    </div>
+  </aside>
+</div>
+
+<div class="cart-overlay hidden" id="cartOverlay"></div>
+
+</body>
+</html>

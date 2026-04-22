@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - FeedMe</title>
+  <title>Sign Up — FeedMe</title>
   <link rel="stylesheet" href="../assets/css/style.css">
   <script type="importmap">
     {
@@ -12,54 +12,89 @@
       }
     }
   </script>
-
-  <script type="module" src="../assets/js/config.js"></script>
-  <script type="module" src="../assets/js/auth.js"></script>
-
 </head>
-<body>
+<body class="auth-page">
 
-<header class="header-nav">
-  <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer;">🍽 FeedMe</div>
-</header>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">🍔</div>
+      <h1>FeedMe</h1>
+      <p class="auth-tagline">Create your account</p>
+    </div>
 
-<main class="login-container">
-  <div class="login-card">
-    <h2>Create an Account</h2>
-    
-    <form id="registerForm">
-      
+    <form id="registerForm" class="auth-form">
       <div class="form-group">
         <label for="fullName">Full Name</label>
-        <input type="text" id="fullName" placeholder="John Doe" required>
+        <input type="text" id="fullName" placeholder="Jane Doe" required>
       </div>
-
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="you@example.com" required>
+        <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="Create a strong password" required minlength="6">
+        <input type="password" id="password" placeholder="Min. 6 characters" required minlength="6" autocomplete="new-password">
       </div>
-
       <div class="form-group">
         <label for="role">I want to...</label>
         <select id="role" required>
-          <option value="customer">Order Food (Customer)</option>
-          <option value="restaurant">Manage a Restaurant</option>
+          <option value="customer">Order food (Customer)</option>
+          <option value="restaurant">Manage a restaurant</option>
         </select>
       </div>
-
-      <button type="submit" class="login-btn">Sign Up</button>
+      <button type="submit" class="btn-primary full-width" id="submitBtn">Create Account</button>
+      <div id="formError" class="form-error"></div>
     </form>
-    
+
     <div class="switch-auth">
-      Already have an account? <a href="login.html">Log In</a>
+      Already have an account? <a href="login.html">Sign in</a>
     </div>
   </div>
-</main>
 
+  <div class="auth-side">
+    <div class="auth-side-content">
+      <h2>Join FeedMe today</h2>
+      <p>Delicious food, delivered fast.</p>
+      <div class="feature-list">
+        <div class="feature-item">🍕 30+ restaurants</div>
+        <div class="feature-item">⚡ 25-45 min delivery</div>
+        <div class="feature-item">💳 Secure payments</div>
+        <div class="feature-item">⭐ Real-time tracking</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { signUp } from '../assets/js/services/auth.js';
+
+  const form = document.getElementById('registerForm');
+  const errorBox = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.textContent = '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Creating account…';
+
+    const fullName = document.getElementById('fullName').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const role = document.getElementById('role').value;
+
+    try {
+      await signUp({ email, password, fullName, role });
+      alert('Account created! Please sign in.');
+      window.location.href = 'login.html';
+    } catch (err) {
+      errorBox.textContent = err.message || 'Could not create account.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Create Account';
+    }
+  });
+</script>
 </body>
 </html>

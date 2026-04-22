@@ -3,193 +3,76 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FeedMe – Restaurants</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>FeedMe — Deliciousness Delivered</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+      }
+    }
+  </script>
 </head>
 <body>
 
 <header class="header">
-  <div class="logo">
+  <a href="index.html" class="logo">
     <div class="logo-icon-sm">🍔</div>
     <div>
       <span class="logo-text">FeedMe</span>
-      <div class="location">📍 Toronto, ON &nbsp; ⏱ 30-40 min</div>
     </div>
-  </div>
+  </a>
   <div class="header-right">
-    <span class="user-greeting" id="userGreeting"></span>
-    <button class="btn-logout" onclick="logout()">Sign Out</button>
+    <a href="auth/login.html" class="btn-logout">Log In</a>
+    <a href="auth/register.html" class="btn-primary" style="padding: 10px 20px; font-size: 14px;">Join Now</a>
   </div>
 </header>
 
-<div class="yellow-bar"></div>
-
-<section class="search-section">
-  <div class="search-wrapper">
-    <span class="search-icon">🔍</span>
-    <input type="text" id="searchInput" placeholder="Search restaurants..." oninput="applyFilters()">
+<section class="hero">
+  <div class="hero-content">
+    <h1>Feed your hunger in one click.</h1>
+    <p>The best local restaurants, delivered straight to your door. Fresh, fast, and reliable.</p>
+    <div class="hero-btns">
+      <a href="auth/register.html" class="btn-primary">Order Now</a>
+      <a href="auth/register.html" class="btn-secondary">Register Business</a>
+    </div>
+  </div>
+  <div class="hero-image">
+    <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" alt="Delicious food">
   </div>
 </section>
 
-<section class="categories">
-  <button class="cat-btn active" onclick="filterCategory('All', this)">All</button>
-  <button class="cat-btn" onclick="filterCategory('American', this)">American</button>
-  <button class="cat-btn" onclick="filterCategory('Italian', this)">Italian</button>
-  <button class="cat-btn" onclick="filterCategory('Japanese', this)">Japanese</button>
-  <button class="cat-btn" onclick="filterCategory('Mexican', this)">Mexican</button>
-  <button class="cat-btn" onclick="filterCategory('Healthy', this)">Healthy</button>
-  <button class="cat-btn" onclick="filterCategory('Desserts', this)">Desserts</button>
-  <button class="cat-btn" onclick="filterCategory('Chinese', this)">Chinese</button>
-  <button class="cat-btn" onclick="filterCategory('Indian', this)">Indian</button>
-  <button class="cat-btn" onclick="filterCategory('Thai', this)">Thai</button>
+<section class="features">
+  <div class="feature-card">
+    <span class="icon">🚀</span>
+    <h3>Fast Delivery</h3>
+    <p>Your food arrives hot and fresh in record time.</p>
+  </div>
+  <div class="feature-card">
+    <span class="icon">🍱</span>
+    <h3>Top Selection</h3>
+    <p>Choose from 30+ local favourites across 18 cuisines.</p>
+  </div>
+  <div class="feature-card">
+    <span class="icon">🔒</span>
+    <h3>Secure Payments</h3>
+    <p>Reliable and safe transactions every time.</p>
+  </div>
 </section>
 
-<main class="restaurant-listing" id="restaurantGrid"></main>
+<footer class="main-footer">
+  <p>&copy; 2026 FeedMe Delivery. Capstone Project II.</p>
+</footer>
 
-<script src="js/app.js"></script>
-<script>
-  // Redirect to login if the user isn't authenticated
-  if (!sessionStorage.getItem('feedme_user')) {
-    window.location.href = 'login.html';
+<!-- Auto-redirect if already signed in -->
+<script type="module">
+  import { getProfile } from './assets/js/services/auth.js';
+  const profile = await getProfile();
+  if (profile) {
+    window.location.href = profile.role === 'restaurant'
+      ? 'views/restaurant/dashboard.html'
+      : 'views/customer/home.html';
   }
-
-  const user = JSON.parse(sessionStorage.getItem('feedme_user') || '{}');
-  document.getElementById('userGreeting').textContent = 'Hi, ' + (user.name || 'Guest');
-
-  function logout() {
-    sessionStorage.removeItem('feedme_user');
-    window.location.href = 'login.html';
-  }
-
-  // --- State ---
-  const allRestaurants = window.restaurants || [];
-  let activeCategory = 'All';
-
-  // --- Rendering ---
-
-  function renderRestaurants(list) {
-    const grid = document.getElementById('restaurantGrid');
-
-    if (!list.length) {
-      grid.innerHTML = '<div class="no-results">No restaurants found 😔</div>';
-      return;
-    }
-
-    grid.innerHTML = list.map(r => `
-      <div class="restaurant-card" onclick="goToMenu(${r.id})">
-        <div class="restaurant-img-wrap">
-          <img
-            src="${r.image}"
-            alt="${r.name}"
-            onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80'"
-          >
-        </div>
-        <div class="restaurant-info">
-          <div class="restaurant-header">
-            <h3>${r.name}</h3>
-            <span class="rating">⭐ ${r.rating}</span>
-          </div>
-          <p class="restaurant-cuisine">${r.cuisine}</p>
-          <p class="restaurant-desc">${r.description}</p>
-          <div class="restaurant-meta">
-            <span>⏱ ${r.deliveryTime}</span>
-            <span>🔥 ${r.priceRange}</span>
-          </div>
-        </div>
-      </div>
-    `).join('');
-  }
-
-  // --- Filtering ---
-
-  function filterCategory(cat, btn) {
-    activeCategory = cat;
-    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    applyFilters();
-  }
-
-  function applyFilters() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-
-    let filtered = allRestaurants;
-
-    if (activeCategory !== 'All') {
-      filtered = filtered.filter(r => r.cuisine === activeCategory);
-    }
-
-    if (query) {
-      filtered = filtered.filter(r =>
-        r.name.toLowerCase().includes(query) ||
-        r.cuisine.toLowerCase().includes(query)
-      );
-    }
-
-    renderRestaurants(filtered);
-  }
-
-  function goToMenu(id) {
-    window.location.href = 'menu.html?id=' + id;
-  }
-
-  // Initial render
-  renderRestaurants(allRestaurants);
 </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FeedMe - Deliciousness Delivered</title>
-    <link rel="stylesheet" href="assets/css/style.css">
-</head>
-<body>
-
-    <header class="header-nav">
-        <div class="logo">🍽 FeedMe</div>
-        <nav>
-            <a href="auth/login.html" class="nav-link">Log In</a>
-            <a href="auth/register.html" class="btn-register">Join Now</a>
-        </nav>
-    </header>
-
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Feed your hunger in one click.</h1>
-            <p>The best local restaurants, delivered straight to your door. Fresh, fast, and reliable.</p>
-            <div class="hero-btns">
-                <a href="auth/register.html" class="btn-primary">Order Now</a>
-                <a href="auth/register.html?role=restaurant" class="btn-secondary">Register Business</a>
-            </div>
-        </div>
-        <div class="hero-image">
-            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=800&q=80" alt="Delicious Food">
-        </div>
-    </section>
-
-    <section class="features">
-        <div class="feature-card">
-            <span class="icon">🚀</span>
-            <h3>Fast Delivery</h3>
-            <p>Your food arrives hot and fresh in record time.</p>
-        </div>
-        <div class="feature-card">
-            <span class="icon">🍱</span>
-            <h3>Top Selection</h3>
-            <p>Choose from hundreds of local favorites.</p>
-        </div>
-        <div class="feature-card">
-            <span class="icon">🔒</span>
-            <h3>Secure Payments</h3>
-            <p>Reliable and safe transactions every time.</p>
-        </div>
-    </section>
-
-    <footer class="main-footer">
-        <p>&copy; 2026 FeedMe Delivery Project. Help Me!.</p>
-    </footer>
-
 </body>
 </html>

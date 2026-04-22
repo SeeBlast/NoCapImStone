@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — FeedMe</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "@supabase/supabase-js": "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"
+      }
+    }
+  </script>
+  <script type="module" src="../../assets/js/pages/checkout.js"></script>
+</head>
+<body>
+
+<header class="header">
+  <a href="home.html" class="logo">
+    <div class="logo-icon-sm">🍔</div>
+    <div>
+      <span class="logo-text">FeedMe</span>
+      <div class="location">📍 Toronto, ON</div>
+    </div>
+  </a>
+</header>
+<div class="yellow-bar"></div>
+
+<div class="checkout-layout">
+
+  <div class="checkout-summary">
+    <a class="back-link" id="backLink" href="#">← Back to menu</a>
+    <h2>Order Summary</h2>
+    <div id="orderItems" class="order-items-list"></div>
+    <div>
+      <div class="total-row"><span>Subtotal</span><span id="summarySubtotal">$0.00</span></div>
+      <div class="total-row"><span>Delivery fee</span><span id="summaryDelivery">$2.99</span></div>
+      <div class="total-row"><span>Tax (13%)</span><span id="summaryTax">$0.00</span></div>
+      <div class="total-row total-bold"><span>Total</span><span id="summaryTotal">$0.00</span></div>
+    </div>
+  </div>
+
+  <div class="checkout-form">
+    <h2>Delivery &amp; Payment</h2>
+
+    <h3 class="section-label">📍 Delivery Address</h3>
+    <div class="form-group">
+      <label for="address">Street Address</label>
+      <input type="text" id="address" placeholder="123 Main St">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label for="city">City</label>
+        <input type="text" id="city" placeholder="Toronto">
+      </div>
+      <div class="form-group">
+        <label for="postal">Postal Code</label>
+        <input type="text" id="postal" placeholder="M5V 2T6">
+      </div>
+    </div>
+
+    <h3 class="section-label" style="margin-top: 24px;">💳 Payment Method</h3>
+    <div class="payment-methods">
+      <label class="pay-option active-option">
+        <input type="radio" name="payment" value="credit" checked>
+        <span class="pay-icon">💳</span> Credit / Debit Card
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="payment" value="paypal">
+        <span class="pay-icon">🅿️</span> PayPal
+      </label>
+      <label class="pay-option">
+        <input type="radio" name="payment" value="cash">
+        <span class="pay-icon">💵</span> Cash on Delivery
+      </label>
+    </div>
+
+    <div id="cardDetails">
+      <div class="form-group">
+        <label for="cardNum">Card Number</label>
+        <input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" inputmode="numeric">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="expiry">Expiry</label>
+          <input type="text" id="expiry" placeholder="MM / YY" maxlength="7" inputmode="numeric">
+        </div>
+        <div class="form-group">
+          <label for="cvv">CVV</label>
+          <input type="text" id="cvv" placeholder="•••" maxlength="4" inputmode="numeric">
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="cardName">Name on Card</label>
+        <input type="text" id="cardName" placeholder="Jane Doe">
+      </div>
+    </div>
+
+    <button class="btn-primary full-width" style="margin-top: 28px;" id="placeOrderBtn">
+      Place Order 🎉
+    </button>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal-card">
+    <div class="success-icon">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Your food is being prepared and will arrive in <strong id="etaText">30-40 min</strong>.</p>
+    <p class="order-num">Order #<span id="orderNum"></span></p>
+    <p id="statusText" style="font-size: 14px; margin-bottom: 20px;">Status: pending</p>
+    <a class="btn-primary" href="home.html">Back to Restaurants</a>
+  </div>
+</div>
+
+</body>
+</html>

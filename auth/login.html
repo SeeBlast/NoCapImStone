@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Log In - FeedMe</title>
+  <title>Log In — FeedMe</title>
   <link rel="stylesheet" href="../assets/css/style.css">
-
   <script type="importmap">
     {
       "imports": {
@@ -13,45 +12,83 @@
       }
     }
   </script>
-
-  <script type="module" src="../assets/js/config.js"></script>
-  <script type="module" src="../assets/js/auth.js"></script>
 </head>
-<body>
+<body class="auth-page">
 
-<header class="header-nav">
-  <div class="logo" onclick="window.location.href='../index.html'" style="cursor:pointer;">🍽 FeedMe</div>
-</header>
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <div class="logo-icon">🍔</div>
+      <h1>FeedMe</h1>
+      <p class="auth-tagline">Welcome back</p>
+    </div>
 
-<main class="login-container">
-  <div class="login-card">
-    <h2>Welcome Back!</h2>
-    
-    <form id="loginForm">
-      
+    <form id="loginForm" class="auth-form">
       <div class="form-group">
         <label for="email">Email</label>
-        <input type="email" id="email" placeholder="you@example.com" required>
+        <input type="email" id="email" placeholder="you@example.com" required autocomplete="email">
       </div>
-
       <div class="form-group">
         <label for="password">Password</label>
-        <input type="password" id="password" placeholder="••••••••" required>
+        <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password">
       </div>
-
-      <div class="form-group">
-        <label for="role">I am a...</label>
-        <select id="role" required>
-          <option value="customer">Hungry Customer</option>
-          <option value="restaurant">Restaurant Owner</option>
-        </select>
-      </div>
-
-      <button type="submit" class="login-btn">Log In</button>
+      <button type="submit" class="btn-primary full-width" id="submitBtn">Sign In</button>
+      <div id="formError" class="form-error"></div>
     </form>
-    
-  </div>
-</main>
 
+    <div class="switch-auth">
+      Don't have an account? <a href="register.html">Sign up</a>
+    </div>
+  </div>
+
+  <div class="auth-side">
+    <div class="auth-side-content">
+      <h2>Order from your favourite restaurants</h2>
+      <p>Fast delivery · Wide selection · Easy ordering</p>
+      <div class="feature-list">
+        <div class="feature-item">🍕 30+ restaurants</div>
+        <div class="feature-item">⚡ 25-45 min delivery</div>
+        <div class="feature-item">💳 Secure payments</div>
+        <div class="feature-item">⭐ Real-time tracking</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { signIn, getProfile } from '../assets/js/services/auth.js';
+
+  const form = document.getElementById('loginForm');
+  const errorBox = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorBox.textContent = '';
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Signing in…';
+
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+
+    try {
+      await signIn({ email, password });
+      // Role comes from the database, NOT from a form field.
+      const profile = await getProfile();
+      if (!profile) {
+        errorBox.textContent = 'Your account has no profile. Contact support.';
+        return;
+      }
+      window.location.href = profile.role === 'restaurant'
+        ? '../views/restaurant/dashboard.html'
+        : '../views/customer/home.html';
+    } catch (err) {
+      errorBox.textContent = err.message || 'Could not sign in.';
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Sign In';
+    }
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Restaurant Panel - FeedMe</title>
+  <link rel="stylesheet" href="../../assets/css/style.css">
+  <script defer src="../../assets/js/admin.js"></script>
+</head>
+<body>
+
+<header class="header-nav">
+  <div class="logo">🍽 FeedMe <span>Business</span></div>
+  <div class="user-controls">
+    <span class="location">Panel de Control</span>
+    <a href="../../auth/login.html" class="logout-btn">Log Out</a>
+  </div>
+</header>
+
+<main class="dashboard-container">
+  
+  <section class="welcome-section">
+    <h2>Incoming Orders</h2>
+    <p class="location">Manage your live deliveries here.</p>
+  </section>
+
+  <section class="restaurant-grid" id="ordersGrid">
+    
+    <article class="restaurant-card" style="border-left: 5px solid var(--accent-yellow);">
+      <div class="card-content">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+          <h3>Order #1042</h3>
+          <span class="status" style="background: #fef3c7; color: #d97706;">Pending</span>
+        </div>
+        <p class="meta"><strong>Customer:</strong> John Doe</p>
+        <div style="background: var(--gray-light); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+          <p>2x Classic Burger</p>
+          <p>1x Chocolate Cake</p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong>Total: $34.97</strong>
+          <button style="padding: 8px 15px; background: var(--text-dark); color: white; border: none; border-radius: 8px; cursor: pointer;">
+            Accept Order
+          </button>
+        </div>
+      </div>
+    </article>
+
+    <article class="restaurant-card" style="border-left: 5px solid var(--success-green);">
+      <div class="card-content">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
+          <h3>Order #1041</h3>
+          <span class="status open">Preparing</span>
+        </div>
+        <p class="meta"><strong>Customer:</strong> Sarah Smith</p>
+        <div style="background: var(--gray-light); padding: 10px; border-radius: 8px; margin-bottom: 15px; font-size: 14px;">
+          <p>1x Sushi Platter</p>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <strong>Total: $18.99</strong>
+          <button style="padding: 8px 15px; background: var(--success-green); color: white; border: none; border-radius: 8px; cursor: pointer;">
+            Mark as Ready
+          </button>
+        </div>
+      </div>
+    </article>
+
+  </section>
+</main>
+
+</body>
+</html>

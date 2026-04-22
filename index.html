@@ -1,6 +1,145 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeedMe – Restaurants</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon-sm">🍔</div>
+    <div>
+      <span class="logo-text">FeedMe</span>
+      <div class="location">📍 Toronto, ON &nbsp; ⏱ 30-40 min</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="user-greeting" id="userGreeting"></span>
+    <button class="btn-logout" onclick="logout()">Sign Out</button>
+  </div>
+</header>
+
+<div class="yellow-bar"></div>
+
+<section class="search-section">
+  <div class="search-wrapper">
+    <span class="search-icon">🔍</span>
+    <input type="text" id="searchInput" placeholder="Search restaurants..." oninput="applyFilters()">
+  </div>
+</section>
+
+<section class="categories">
+  <button class="cat-btn active" onclick="filterCategory('All', this)">All</button>
+  <button class="cat-btn" onclick="filterCategory('American', this)">American</button>
+  <button class="cat-btn" onclick="filterCategory('Italian', this)">Italian</button>
+  <button class="cat-btn" onclick="filterCategory('Japanese', this)">Japanese</button>
+  <button class="cat-btn" onclick="filterCategory('Mexican', this)">Mexican</button>
+  <button class="cat-btn" onclick="filterCategory('Healthy', this)">Healthy</button>
+  <button class="cat-btn" onclick="filterCategory('Desserts', this)">Desserts</button>
+  <button class="cat-btn" onclick="filterCategory('Chinese', this)">Chinese</button>
+  <button class="cat-btn" onclick="filterCategory('Indian', this)">Indian</button>
+  <button class="cat-btn" onclick="filterCategory('Thai', this)">Thai</button>
+</section>
+
+<main class="restaurant-listing" id="restaurantGrid"></main>
+
+<script src="js/app.js"></script>
+<script>
+  // Redirect to login if the user isn't authenticated
+  if (!sessionStorage.getItem('feedme_user')) {
+    window.location.href = 'login.html';
+  }
+
+  const user = JSON.parse(sessionStorage.getItem('feedme_user') || '{}');
+  document.getElementById('userGreeting').textContent = 'Hi, ' + (user.name || 'Guest');
+
+  function logout() {
+    sessionStorage.removeItem('feedme_user');
+    window.location.href = 'login.html';
+  }
+
+  // --- State ---
+  const allRestaurants = window.restaurants || [];
+  let activeCategory = 'All';
+
+  // --- Rendering ---
+
+  function renderRestaurants(list) {
+    const grid = document.getElementById('restaurantGrid');
+
+    if (!list.length) {
+      grid.innerHTML = '<div class="no-results">No restaurants found 😔</div>';
+      return;
+    }
+
+    grid.innerHTML = list.map(r => `
+      <div class="restaurant-card" onclick="goToMenu(${r.id})">
+        <div class="restaurant-img-wrap">
+          <img
+            src="${r.image}"
+            alt="${r.name}"
+            onerror="this.src='https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400&q=80'"
+          >
+        </div>
+        <div class="restaurant-info">
+          <div class="restaurant-header">
+            <h3>${r.name}</h3>
+            <span class="rating">⭐ ${r.rating}</span>
+          </div>
+          <p class="restaurant-cuisine">${r.cuisine}</p>
+          <p class="restaurant-desc">${r.description}</p>
+          <div class="restaurant-meta">
+            <span>⏱ ${r.deliveryTime}</span>
+            <span>🔥 ${r.priceRange}</span>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  // --- Filtering ---
+
+  function filterCategory(cat, btn) {
+    activeCategory = cat;
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilters();
+  }
+
+  function applyFilters() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+
+    let filtered = allRestaurants;
+
+    if (activeCategory !== 'All') {
+      filtered = filtered.filter(r => r.cuisine === activeCategory);
+    }
+
+    if (query) {
+      filtered = filtered.filter(r =>
+        r.name.toLowerCase().includes(query) ||
+        r.cuisine.toLowerCase().includes(query)
+      );
+    }
+
+    renderRestaurants(filtered);
+  }
+
+  function goToMenu(id) {
+    window.location.href = 'menu.html?id=' + id;
+  }
+
+  // Initial render
+  renderRestaurants(allRestaurants);
+</script>
+</body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FeedMe - Deliciousness Delivered</title>

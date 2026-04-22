@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FeedMe – Checkout</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-icon-sm">🍔</div>
+    <div>
+      <span class="logo-text">FeedMe</span>
+      <div class="location">📍 Toronto, ON &nbsp; ⏱ 30-40 min</div>
+    </div>
+  </div>
+</header>
+<div class="yellow-bar"></div>
+
+<div class="checkout-layout">
+
+  <!-- Order Summary Panel -->
+  <div class="checkout-summary">
+    <a class="back-link" id="backLink" href="#">← Back to menu</a>
+    <h2>Order Summary</h2>
+    <div id="orderItems" class="order-items-list"></div>
+    <div class="order-totals">
+      <div class="total-row">
+        <span>Subtotal</span>
+        <span>$<span id="summarySubtotal">0.00</span></span>
+      </div>
+      <div class="total-row">
+        <span>Delivery fee</span>
+        <span>$2.99</span>
+      </div>
+      <div class="total-row">
+        <span>Tax (13%)</span>
+        <span>$<span id="summaryTax">0.00</span></span>
+      </div>
+      <div class="total-row total-bold">
+        <span>Total</span>
+        <span>$<span id="summaryTotal">0.00</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delivery & Payment Form -->
+  <div class="checkout-form">
+    <h2>Delivery & Payment</h2>
+
+    <h3 class="section-label">📍 Delivery Address</h3>
+    <div class="form-group">
+      <label>Street Address</label>
+      <input type="text" id="address" placeholder="123 Main St">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>City</label>
+        <input type="text" id="city" placeholder="Toronto">
+      </div>
+      <div class="form-group">
+        <label>Postal Code</label>
+        <input type="text" id="postal" placeholder="M5V 2T6">
+      </div>
+    </div>
+
+    <h3 class="section-label" style="margin-top: 24px;">💳 Payment Method</h3>
+    <div class="payment-methods">
+      <label class="pay-option active-option" id="payCredit">
+        <input type="radio" name="payment" value="credit" checked onchange="selectPayment(this)">
+        <span class="pay-icon">💳</span> Credit / Debit Card
+      </label>
+      <label class="pay-option" id="payPaypal">
+        <input type="radio" name="payment" value="paypal" onchange="selectPayment(this)">
+        <span class="pay-icon">🅿️</span> PayPal
+      </label>
+      <label class="pay-option" id="payCash">
+        <input type="radio" name="payment" value="cash" onchange="selectPayment(this)">
+        <span class="pay-icon">💵</span> Cash on Delivery
+      </label>
+    </div>
+
+    <!-- Card details (hidden when PayPal or Cash is selected) -->
+    <div id="cardDetails">
+      <div class="form-group">
+        <label>Card Number</label>
+        <input type="text" id="cardNum" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Expiry</label>
+          <input type="text" id="expiry" placeholder="MM / YY" maxlength="7" oninput="formatExpiry(this)">
+        </div>
+        <div class="form-group">
+          <label>CVV</label>
+          <input type="text" id="cvv" placeholder="•••" maxlength="4">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Name on Card</label>
+        <input type="text" id="cardName" placeholder="Jane Doe">
+      </div>
+    </div>
+
+    <button class="btn-primary full-width" style="margin-top: 28px;" onclick="placeOrder()">
+      Place Order 🎉
+    </button>
+  </div>
+</div>
+
+<!-- Success Modal -->
+<div class="modal-overlay hidden" id="successModal">
+  <div class="modal-card">
+    <div class="success-icon">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Your food is being prepared and will arrive in <strong id="etaText">30-40 min</strong>.</p>
+    <p class="order-num">Order #<span id="orderNum"></span></p>
+    <button class="btn-primary" onclick="window.location.href='index.html'">Back to Restaurants</button>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+<script>
+  // Redirect if not logged in
+  if (!sessionStorage.getItem('feedme_user')) {
+    window.location.href = 'login.html';
+  }
+
+  // --- Load cart and restaurant data ---
+
+  const params     = new URLSearchParams(window.location.search);
+  const restId     = parseInt(params.get('id')) || parseInt(sessionStorage.getItem('feedme_current_rest')) || 1;
+  const restaurant = (window.restaurants || []).find(r => r.id === restId);
+  const cart       = JSON.parse(sessionStorage.getItem('feedme_cart_' + restId) || '[]');
+
+  document.getElementById('backLink').href = 'menu.html?id=' + restId;
+
+  // Go back to menu if cart is empty
+  if (!cart.length) {
+    window.location.href = 'menu.html?id=' + restId;
+  }
+
+  // --- Calculate totals ---
+
+  const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+  const delivery = 2.99;
+  const tax      = subtotal * 0.13;
+  const total    = subtotal + delivery + tax;
+
+  document.getElementById('summarySubtotal').textContent = subtotal.toFixed(2);
+  document.getElementById('summaryTax').textContent      = tax.toFixed(2);
+  document.getElementById('summaryTotal').textContent    = total.toFixed(2);
+
+  // --- Render order items ---
+
+  document.getElementById('orderItems').innerHTML = cart.map(c => `
+    <div class="order-item">
+      <span class="order-item-qty">${c.qty}×</span>
+      <span class="order-item-name">${c.name}</span>
+      <span class="order-item-price">$${(c.price * c.qty).toFixed(2)}</span>
+    </div>
+  `).join('');
+
+  // --- Payment method selection ---
+
+  function selectPayment(radio) {
+    document.querySelectorAll('.pay-option').forEach(el => el.classList.remove('active-option'));
+    radio.parentElement.classList.add('active-option');
+
+    // Show card details only for credit/debit
+    document.getElementById('cardDetails').style.display =
+      radio.value === 'credit' ? 'block' : 'none';
+  }
+
+  // --- Card input formatting ---
+
+  function formatCard(input) {
+    // Strip non-digits, cap at 16, then insert spaces every 4 digits
+    const digits = input.value.replace(/\D/g, '').substring(0, 16);
+    input.value  = digits.replace(/(.{4})/g, '$1 ').trim();
+  }
+
+  function formatExpiry(input) {
+    // Strip non-digits, cap at 4, then insert " / " after the month
+    const digits = input.value.replace(/\D/g, '').substring(0, 4);
+    input.value  = digits.length > 2 ? digits.slice(0, 2) + ' / ' + digits.slice(2) : digits;
+  }
+
+  // --- Place order ---
+
+  function placeOrder() {
+    const address = document.getElementById('address').value.trim();
+
+    if (!address) {
+      alert('Please enter your delivery address.');
+      return;
+    }
+
+    // Generate a random 6-digit order number
+    const orderNumber = Math.floor(100000 + Math.random() * 900000);
+
+    document.getElementById('orderNum').textContent  = orderNumber;
+    document.getElementById('etaText').textContent   = restaurant ? restaurant.deliveryTime : '30-40 min';
+    document.getElementById('successModal').classList.remove('hidden');
+
+    // Clear the cart after ordering
+    sessionStorage.removeItem('feedme_cart_' + restId);
+  }
+</script>
+</body>
+</html>
